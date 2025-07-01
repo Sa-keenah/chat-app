@@ -9,9 +9,13 @@ Frontend: A basic HTML + JavaScript interface to send and display messages.
 File Structure
 chat-app/
 ├── public/
-│   └── index.html         # Frontend UI
-├── server.js              # Main server file
-├── package.json           # Project dependencies
+│   └── index.html
+|__ .gitignore
+|__ package-lock.json
+|__ package.json
+|__ READ.me.md
+|__ REPORT.md
+├── server.js
 
 How it Works
 1. Users load the chat page.
@@ -54,7 +58,33 @@ Monitored Metrics
 | Throughput       | Number of messages handled per second        |
 
 Tools Used
-[Artillery](https://artillery.io) for load testing
+- [Artillery](https://artillery.io): Used to simulate users and generate load.
+- `console.log()` statements to observe connection counts and message volume.
+
+//Example: ```yaml
+config:
+  target: "ws://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+scenarios:
+  - engine: "ws"
+    flow:
+      - send: { emit: "chat message", data: "Test message from Artillery" }
+      - think:
 
 Run the test:
+    npm install -g artillery
     artillery run load-test.yml
+
+Example Results (Simulated)
+Users	    Avg. Latency	Throughput	    Memory  	CPU
+100	        25ms	        200 msg/s	    80MB	    18%
+500     	40ms	        600 msg/s	    130MB	    40%
+
+Conclusion
+This chat app demonstrates Node.js's non-blocking architecture and real-time capabilities using Socket.io. It efficiently handles multiple users with low latency and can be further scaled using tools like PM2 or Redis for load balancing.
+It is ideal for learning:
+- WebSocket communication
+- Node.js backend setup
+- Frontend interaction with live server events
